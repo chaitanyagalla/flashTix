@@ -1,1 +1,13 @@
 node_modules/
+
+# AI / editor tooling directories. These are regenerated locally by each
+# developer's tool of choice and must not be shared through version control.
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
+
+# Secrets. Commit .env.example instead, never a real .env.
+.env
+.env.*
+!.env.example
