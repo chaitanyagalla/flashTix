@@ -1,7 +1,9 @@
 import { Router } from "express";
-import { registerSchema } from "../schemas/auth.schema.js";
-import { registerUser } from "../services/auth.services.js";
+import { loginSchema, registerSchema } from "../schemas/auth.schema.js";
+import { loginUser, registerUser } from "../services/auth.services.js";
 import { Prisma } from "../generated/prisma/client.js";
+import { authenticate } from "../middleware/authenticate.js";
+import { requireRole } from "../middleware/authorize.js";
 
 export const authRouter = Router();
 
@@ -35,3 +37,44 @@ authRouter.post("/register", async (req, res, next) => {
     next(error);
   }
 });
+
+authRouter.post("/login", async(req, res, next) => {
+    try {
+        const result = loginSchema.safeParse(req.body)
+        if (!result.success) {
+            return res.status(400).json({
+                error: "INVALIDATION_ERROR",
+                message: "Invalid login data",
+                details: result.error.flatten()
+            })
+        }
+
+        const loginResult = await loginUser(req.body);
+
+        if (!loginResult) {
+            return res.status(401).json({
+                error: "INVALID_CRENDENTIALS",
+                message: "Invalid email or password"
+            })
+        }
+
+        return res.status(200).json({
+            data: loginResult
+        })
+
+    } catch (error) {
+        next(error)
+    }
+})
+
+authRouter.get("/me",authenticate, (req, res) => {
+    return res.status(200).json({
+        data: res.locals.user 
+    })
+})
+
+authRouter.get("/admin-test", authenticate, requireRole("ADMIN"), (req, res) => {
+    return res.status(200).json({
+        message: "Welcome Admin"
+    })
+})
