@@ -1,6 +1,7 @@
 import express from "express"
 import { eventRouter } from "./routes/event.routes.js";
 import { pinoHttp } from "pino-http";
+import { errorhandler } from "./middleware.ts/error-handler.js";
 
 export const app = express();
 
@@ -15,4 +16,5 @@ app.get("/health", (_req, res) => {
 });
 
 app.use("/events", eventRouter);
+app.use(errorhandler)
 
