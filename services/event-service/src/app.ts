@@ -1,7 +1,7 @@
 import express from "express"
 import { eventRouter } from "./routes/event.routes.js";
 import { pinoHttp } from "pino-http";
-import { errorhandler } from "./middleware.ts/error-handler.js";
+import { errorhandler } from "./middleware/error-handler.js";
 
 export const app = express();
 

@@ -16,6 +16,6 @@
     "exactOptionalPropertyTypes": true
   },
 
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/middleware"],
   "exclude": ["node_modules", "dist"]
 }

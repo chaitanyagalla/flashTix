@@ -31,8 +31,9 @@ export function errorhandler(
     }
 
     if (
-      (error.code === "23514" && error.constraint === "chk_booking_window") ||
-      error.constraint === "chk_booking_before_event"
+      error.code === "23514" &&
+      (error.constraint === "chk_booking_window" ||
+        error.constraint === "chk_booking_before_event")
     ) {
       return res.status(422).json({
         error: "INVALID_BOOKING_WINDOW",
@@ -46,4 +47,4 @@ export function errorhandler(
     error: "INTERNAL_SERVER_ERROR",
     message: "An unexpected error occurred",
   });
-} 
+}

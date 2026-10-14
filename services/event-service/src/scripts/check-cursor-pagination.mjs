@@ -13,7 +13,7 @@ while(true) {
         url.searchParams.set("cursor", cursor);
     }
     const response = await fetch(url);
-    if (!response.status) {
+    if (!response.ok) {
         throw new Error(`http ${response.status}`)
     }
     const result = await response.json()

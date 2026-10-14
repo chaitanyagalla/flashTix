@@ -7,10 +7,11 @@ import {
   listEvents,
   listEventsByCursor,
 } from "../repositories/event.repository.js";
-import { authenticate } from "../middleware.ts/authenticate.js";
-import { requrieRole } from "../middleware.ts/authorization.js";
+import { authenticate } from "../middleware/authenticate.js";
+import { requrieRole } from "../middleware/authorization.js";
 import { error } from "node:console";
 import { decodeCursor, encodeCursor } from "../lib/utils/event-cursor.js";
+import z from "zod";
 
 export const eventRouter = Router();
 
@@ -154,8 +155,15 @@ eventRouter.get("/:id", async (req, res, next) => {
       message: "Invalid event id",
     });
   }
+  const parsed = z.uuid().safeParse(id)
+  if (!parsed.success) {
+    return res.status(400).json({
+        error: "INVALID_EVENT_ID",
+        message: "Event Id must be a valid UUID"
+    })
+  }
   try {
-    const event = await getEvent(id);
+    const event = await getEvent(parsed.data);
 
     if (!event) {
       return res.status(404).json({
